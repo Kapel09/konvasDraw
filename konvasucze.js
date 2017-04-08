@@ -1,19 +1,24 @@
 var posX; // mouse coordinates
 var posY;
-var coordinates = [];
-var id;
-var point;
+var line1; 
+var line2;
+var coordinates1X; // line1 coordinates
+var coordinates1Y;
+var coordinates2X; // line2 coordinates
+var coordinates2Y;
+var id;     // point id
+var point;  
 var Line;
-var index = 0;
+var index = 0; // counter
 
-function konvaInitialize(){        //create Canvas
+function konvaInitialize(){          //create Canvas
 
-    var stage = new Konva.Stage({  // create stage
+    var stage = new Konva.Stage({    // create stage
         container: 'container',   
         width: window.innerWidth,
         height: window.innerHeight
         });
-    var layer = new Konva.Layer(); // create layers
+    var layer = new Konva.Layer();    // create layers
     var pointLayer = new Konva.Layer(); 
     var lineLayer = new Konva.Layer();
     var board = new Konva.Rect({   // create board
@@ -26,10 +31,8 @@ function konvaInitialize(){        //create Canvas
         strokeWidth: 4
         });
     
-// add the board to the layer
-        layer.add(board);
-// add the layer to the stage
-        stage.add(layer, lineLayer, pointLayer);
+        layer.add(board); // add the board to the layer
+        stage.add(layer, lineLayer, pointLayer); // add the layer to the stage
        
 /* ~~~~~~~~~~~~~~~~ onMouseClick behavior ~~ */ 
     board.on('click', function(){  
@@ -56,9 +59,11 @@ function addPoint(){
             opacity: 0.8,
             id: index
             });
-        coordinates.push(posX);
-        coordinates.push(posY);
-        console.log(coordinates +" "+ index);
+        coordinates1X = coordinates2X;
+        coordinates1Y = coordinates2Y;
+        coordinates2X = posX;
+        coordinates2Y = posY;
+        console.log(coordinates1X + " "+ coordinates1Y + " dwaa: " + coordinates2X + " " + coordinates2Y+" "+ index);
         index ++;
     
     
@@ -70,7 +75,7 @@ function addPoint(){
         this.radius(13);
         id = this.getId();
         pointLayer.draw();
-        console.log("index: " + id);
+        console.log("id: " + id);
         });
     
 /* ~~~~~~~~~~~~~~~ onMouseOut behavior ~~ */
@@ -90,19 +95,38 @@ function addPoint(){
 }
 /* ~~~~~~~~~~~~~~~ Add Line ~~ */
 function addLine(){
-        Line = new Konva.Line({
-            points: coordinates,
-            stroke: '#070a43',
-            strokeWidth: 7,
-            lineCap: 'round',
-            lineJoin: 'round'
-            });
+    Line = new Konva.Line({
+        points: [coordinates1X, coordinates1Y, coordinates2X, coordinates2Y],
+        stroke: '#070a43',
+        strokeWidth: 7,
+        lineCap: 'round',
+        ineJoin: 'round'
+        });
+    
+    Line.on('mouseup', function(){
+            console.log(this);
+            var lineId = this.index;
+            console.log("id lini: " + lineId);
+    });
+    
 }
 /* ~~~~~~~~~~~~~~~ Update Point/Line ~~ */
 function updatePoints(idx, pX, pY){
-        coordinates[2 * idx] =  pX;
-        coordinates[(2 * idx) + 1] = pY;
-        lineLayer.draw();
+    line1 = stage.find('Line')[idx];
+        console.log('index: ' + index + ' idx: ' + idx);
+        line1.attrs.points[2]= pX;
+        line1.attrs.points[3]= pY;
+    line2 = stage.find('Line')[idx + 1];
+
+    if(idx + 1 < index){         // if point is not last
+        line2.attrs.points[0]= pX;
+        line2.attrs.points[1]= pY;
+        }
+    else {
+        coordinates2X = line1.attrs.points[2];
+        coordinates2Y = line1.attrs.points[3];
+        }
+    lineLayer.draw();
 }
     
     
