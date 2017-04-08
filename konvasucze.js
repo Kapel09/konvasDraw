@@ -81,42 +81,34 @@ function addPoint(){
         this.radius(10);
         pointLayer.draw();
         });
-    
-    point.on('dragend', function() {
-            var coordX = posX;
-            var coordY = posY;
-          //  pointLayer.draw();
-            updatePoints(id);
+/* ~~~~~~~~~~~~~~~ onDragMove behavior ~~ */
+    point.on('dragmove', function() {
+         var pX = this.getX();
+         var pY = this.getY();
+         updatePoints(id, pX, pY);
         });
-    
-     pointLayer.on('beforeDraw', function() {
-         //updatePoints(id);
-            //dsfdsf sdf dsfs
-    });
 }
 /* ~~~~~~~~~~~~~~~ Add Line ~~ */
 function addLine(){
         Line = new Konva.Line({
             points: coordinates,
-            stroke: 'green',
+            stroke: '#070a43',
             strokeWidth: 7,
             lineCap: 'round',
             lineJoin: 'round'
             });
 }
-    
-function updatePoints(idx){
-        console.log(idx);
-        coordinates[2 * idx] =  posX;
-        coordinates[(2 * idx) + 1] = posY;
+/* ~~~~~~~~~~~~~~~ Update Point/Line ~~ */
+function updatePoints(idx, pX, pY){
+        coordinates[2 * idx] =  pX;
+        coordinates[(2 * idx) + 1] = pY;
         lineLayer.draw();
-
 }
-
-
+    
+    
 }
 /* ~~~~~~~~~~~~~~~~ Detect mouse coordinates ~~ */
-    document.onmousemove = function(mouse){
+document.onmousemove = function(mouse){
         posX = mouse.pageX;
         posY = mouse.pageY;
         }
